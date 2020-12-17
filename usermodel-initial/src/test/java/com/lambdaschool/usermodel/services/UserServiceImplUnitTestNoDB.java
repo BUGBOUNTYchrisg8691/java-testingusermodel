@@ -6,6 +6,7 @@ import com.lambdaschool.usermodel.models.Role;
 import com.lambdaschool.usermodel.models.User;
 import com.lambdaschool.usermodel.models.UserRoles;
 import com.lambdaschool.usermodel.models.Useremail;
+import com.lambdaschool.usermodel.repository.RoleRepository;
 import com.lambdaschool.usermodel.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserModelApplicationTest.class, properties = {"command.line.runner.enabled=false"})
@@ -30,9 +32,15 @@ public class UserServiceImplUnitTestNoDB
 {
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private RoleService roleService;
 
 	@MockBean
 	private UserRepository userrepos;
+	
+	@MockBean
+	private RoleRepository rolerepos;
 	
 	private List<User> userList = new ArrayList<>();
 	
@@ -169,11 +177,12 @@ public class UserServiceImplUnitTestNoDB
 	@Test(expected = ResourceNotFoundException.class)
 	public void deleteNotFound()
 	{
-		Mockito.when(userrepos.findById(4L)).thenReturn(Optional.of(userList.get(0)));
+		Mockito.when(userrepos.findById(4L)).thenReturn(Optional.empty());
 		Mockito.doNothing().when(userrepos).deleteById(4L);
 		userService.delete(4L);
 		assertEquals(5, userList.size());
 	}
+	
 	@Test
 	public void findByName()
 	{
@@ -187,9 +196,90 @@ public class UserServiceImplUnitTestNoDB
 		Mockito.when(userrepos.findByUsername("testmisskitty")).thenReturn(null);
 		assertEquals("testmisskitty", userService.findByName("testmisskitty").getUsername());
 	}
+	
 	@Test
 	public void save()
 	{
+		Role role = new Role("user");
+		
+		role.setRoleid(2);
+		
+		String userUsername = "testuser";
+		
+		User user = new User(userUsername,
+				"password",
+				"testuser@lambdaschool.local");
+		user.getRoles()
+				.add(new UserRoles(user,
+						role));
+		user.getUseremails()
+				.add(new Useremail(user,
+						"testuser@email.local"));
+		
+		Mockito.when(userrepos.save(any(User.class))).thenReturn(user);
+		Mockito.when(rolerepos.findById(2L)).thenReturn(Optional.of(role));
+		
+		User newUser = userService.save(user);
+		assertNotNull(newUser);
+		assertEquals(userUsername, newUser.getUsername());
+	}
+	
+	@Test
+	public void savePut()
+	{
+		Role role = new Role("user");
+		
+		role.setRoleid(2);
+		
+		String userUsername = "testuser";
+		
+		User user = new User(userUsername,
+				"password",
+				"testuser@lambdaschool.local");
+		user.getRoles()
+				.add(new UserRoles(user,
+						role));
+		user.getUseremails()
+				.add(new Useremail(user,
+						"testuser@email.local"));
+		user.setUserid(6);
+		
+		Mockito.when(userrepos.save(any(User.class))).thenReturn(user);
+		Mockito.when(userrepos.findById(6L)).thenReturn(Optional.of(user));
+		Mockito.when(rolerepos.findById(2L)).thenReturn(Optional.of(role));
+		
+		User newUser = userService.save(user);
+		assertNotNull(newUser);
+		assertEquals(userUsername, newUser.getUsername());
+	}
+	
+	@Test(expected = ResourceNotFoundException.class)
+	public void savePutNotFound()
+	{
+		Role role = new Role("user");
+		
+		role.setRoleid(2);
+		
+		String userUsername = "testuser";
+		
+		User user = new User(userUsername,
+				"password",
+				"testuser@lambdaschool.local");
+		user.getRoles()
+				.add(new UserRoles(user,
+						role));
+		user.getUseremails()
+				.add(new Useremail(user,
+						"testuser@email.local"));
+		user.setUserid(6);
+		
+		Mockito.when(userrepos.save(any(User.class))).thenReturn(user);
+		Mockito.when(userrepos.findById(6L)).thenReturn(Optional.empty());
+		Mockito.when(rolerepos.findById(2L)).thenReturn(Optional.of(role));
+		
+		User newUser = userService.save(user);
+		assertNotNull(newUser);
+		assertEquals(userUsername, newUser.getUsername());
 	}
 	
 	@Test
