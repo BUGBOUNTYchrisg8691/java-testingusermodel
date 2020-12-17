@@ -10,8 +10,10 @@ import com.lambdaschool.usermodel.repository.RoleRepository;
 import com.lambdaschool.usermodel.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserModelApplicationTest.class, properties = {"command.line.runner.enabled=false"})
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING) // alphabetical
 public class UserServiceImplUnitTestNoDB
 {
 	@Autowired
@@ -285,6 +288,21 @@ public class UserServiceImplUnitTestNoDB
 	@Test
 	public void update()
 	{
+		String newUsername = "testuser2";
+		String newEmail = "testuser2@email.com";
+		
+		User user = new User();
+		user.setUserid(5);
+		user.setUsername(newUsername);
+		user.setPrimaryemail(newEmail);
+		
+		Mockito.when(userrepos.save(any(User.class))).thenReturn(user);
+		Mockito.when(userrepos.findById(5L)).thenReturn(Optional.of(user));
+		
+		User updatedUser = userService.save(user);
+		assertNotNull(updatedUser);
+		assertEquals(newUsername, updatedUser.getUsername());
+		assertEquals(newEmail, updatedUser.getPrimaryemail());
 	}
 	
 	@Test
