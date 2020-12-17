@@ -299,14 +299,9 @@ public class UserServiceImplUnitTestNoDB
 		Mockito.when(userrepos.save(any(User.class))).thenReturn(user);
 		Mockito.when(userrepos.findById(5L)).thenReturn(Optional.of(user));
 		
-		User updatedUser = userService.save(user);
+		User updatedUser = userService.update(user, 5);
 		assertNotNull(updatedUser);
 		assertEquals(newUsername, updatedUser.getUsername());
 		assertEquals(newEmail, updatedUser.getPrimaryemail());
-	}
-	
-	@Test
-	public void deleteAll()
-	{
 	}
 }
