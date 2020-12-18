@@ -21,6 +21,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.Assert.*;
 
+/**
+ * The type User controller test.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = UserModelApplication.class)
 @WebAppConfiguration
@@ -29,31 +32,37 @@ public class UserControllerTest
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
 	private MockMvc mockMvc;
 	
-	private User userFromJsonString(String json, Class<User> userClass) throws JsonProcessingException
-	{
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(json, userClass);
-	}
-	
-	private User[] userArrayFromJsonString(String json, Class<User[]> userArrayClass) throws JsonProcessingException
-	{
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(json, User[].class);
-	}
-	
+	/**
+	 * Sets up.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Before
 	public void setUp() throws Exception
 	{
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 	
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	@After
 	public void tearDown() throws Exception
 	{
 	}
 	
+	/**
+	 * List all users.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void listAllUsers() throws Exception
 	{
@@ -64,10 +73,15 @@ public class UserControllerTest
 		assertEquals(200, status);
 		
 		String content = result.getResponse().getContentAsString();
-		User[] userList = userArrayFromJsonString(content, User[].class);
-		assertTrue(userList.length > 0);
+		User[] users = objectMapper.readValue(content, User[].class);
+		assertTrue(users.length > 0);
 	}
 	
+	/**
+	 * Gets user by id.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void getUserById() throws Exception
 	{
@@ -79,10 +93,15 @@ public class UserControllerTest
 		assertEquals(200, status);
 		
 		String content = result.getResponse().getContentAsString();
-		User user = userFromJsonString(content, User.class);
+		User user = objectMapper.readValue(content, User.class);
 		assertEquals("admin", user.getUsername());
 	}
 	
+	/**
+	 * Gets user by name.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void getUserByName() throws Exception
 	{
@@ -94,10 +113,15 @@ public class UserControllerTest
 		assertEquals(200, status);
 		
 		String content = result.getResponse().getContentAsString();
-		User user = userFromJsonString(content, User.class);
+		User user = objectMapper.readValue(content, User.class);
 		assertEquals("admin@lambdaschool.local", user.getPrimaryemail());
 	}
 	
+	/**
+	 * Gets user like name.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void getUserLikeName() throws Exception
 	{
@@ -109,26 +133,38 @@ public class UserControllerTest
 		assertEquals(200, status);
 		
 		String content = result.getResponse().getContentAsString();
-		User[] users = userArrayFromJsonString(content, User[].class);
+		User[] users = objectMapper.readValue(content, User[].class);
 		assertTrue(users.length == 2);
 	}
 	
+	/**
+	 * Add new user.
+	 */
 	@Test
 	public void addNewUser()
 	{
 	
 	}
 	
+	/**
+	 * Update full user.
+	 */
 	@Test
 	public void updateFullUser()
 	{
 	}
 	
+	/**
+	 * Update user.
+	 */
 	@Test
 	public void updateUser()
 	{
 	}
 	
+	/**
+	 * Delete user by id.
+	 */
 	@Test
 	public void deleteUserById()
 	{

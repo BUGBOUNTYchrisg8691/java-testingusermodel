@@ -28,6 +28,9 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 
+/**
+ * The type User service impl unit test no db.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserModelApplicationTest.class, properties = {"command.line.runner.enabled=false"})
 //@FixMethodOrder(MethodSorters.NAME_ASCENDING) // alphabetical
@@ -47,6 +50,11 @@ public class UserServiceImplUnitTestNoDB
 	
 	private List<User> userList = new ArrayList<>();
 	
+	/**
+	 * Sets up.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Before
 	public void setUp() throws Exception
 	{
@@ -136,11 +144,19 @@ public class UserServiceImplUnitTestNoDB
 		MockitoAnnotations.initMocks(this);
 	}
 	
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	@After
 	public void tearDown() throws Exception
 	{
 	}
 	
+	/**
+	 * Find user by id.
+	 */
 	@Test
 	public void findUserById()
 	{
@@ -148,12 +164,19 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals("testadmin", userService.findUserById(4).getUsername());
 	}
 	
+	/**
+	 * Find user by id not found.
+	 */
 	@Test(expected = ResourceNotFoundException.class)
 	public void findUserByIdNotFound()
 	{
 		Mockito.when(userrepos.findById(4L)).thenReturn(Optional.empty());
 		assertEquals("testadmin", userService.findUserById(4).getUsername());
 	}
+	
+	/**
+	 * Find by name containing.
+	 */
 	@Test
 	public void findByNameContaining()
 	{
@@ -161,6 +184,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals(5, userService.findByNameContaining("in").size());
 	}
 	
+	/**
+	 * Find all.
+	 */
 	@Test
 	public void findAll()
 	{
@@ -168,6 +194,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals(5, userService.findAll().size());
 	}
 	
+	/**
+	 * Delete.
+	 */
 	@Test
 	public void delete()
 	{
@@ -177,6 +206,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals(5, userList.size());
 	}
 	
+	/**
+	 * Delete not found.
+	 */
 	@Test(expected = ResourceNotFoundException.class)
 	public void deleteNotFound()
 	{
@@ -186,6 +218,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals(5, userList.size());
 	}
 	
+	/**
+	 * Find by name.
+	 */
 	@Test
 	public void findByName()
 	{
@@ -193,6 +228,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals("testmisskitty", userService.findByName("testmisskitty").getUsername());
 	}
 	
+	/**
+	 * Find by name not found.
+	 */
 	@Test(expected = ResourceNotFoundException.class)
 	public void findByNameNotFound()
 	{
@@ -200,6 +238,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals("testmisskitty", userService.findByName("testmisskitty").getUsername());
 	}
 	
+	/**
+	 * Save.
+	 */
 	@Test
 	public void save()
 	{
@@ -227,6 +268,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals(userUsername, newUser.getUsername());
 	}
 	
+	/**
+	 * Save put.
+	 */
 	@Test
 	public void savePut()
 	{
@@ -256,6 +300,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals(userUsername, newUser.getUsername());
 	}
 	
+	/**
+	 * Save put not found.
+	 */
 	@Test(expected = ResourceNotFoundException.class)
 	public void savePutNotFound()
 	{
@@ -285,6 +332,9 @@ public class UserServiceImplUnitTestNoDB
 		assertEquals(userUsername, newUser.getUsername());
 	}
 	
+	/**
+	 * Update.
+	 */
 	@Test
 	public void update()
 	{

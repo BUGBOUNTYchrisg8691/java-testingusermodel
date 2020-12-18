@@ -20,8 +20,8 @@ import java.util.Locale;
 /**
  * SeedData puts both known and random data into the database. It implements CommandLineRunner.
  * <p>
- * CoomandLineRunner: Spring Boot automatically runs the run method once and only once
- * after the application context has been loaded.
+ * CoomandLineRunner: Spring Boot automatically runs the run method once and only once after the application context has
+ * been loaded.
  */
 @Transactional
 @ConditionalOnProperty(prefix = "command.line.runner", value = "enabled", havingValue = "true", matchIfMissing = true)
@@ -34,7 +34,7 @@ public class SeedData
      */
     @Autowired
     RoleService roleService;
-
+    
     /**
      * Connects the user service to this process
      */
